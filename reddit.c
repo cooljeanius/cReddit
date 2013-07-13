@@ -247,13 +247,14 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
 
 }
 
-void cleanup()
+void cleanup() // There is actually a prototype for this in reddit.h; I do not know why I am getting a warning about this...
 {
 	curl_global_cleanup();
 	endwin();
 }
 
-char *ask_for_subreddit() {
+char *ask_for_subreddit() // See comment for cleanup()
+{
 	clear();
 	mvprintw(10, 6, "Subreddit: ");
 	int ch, i = 0;

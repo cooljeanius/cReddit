@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = -Wall
 
-build :
+build_script :
 	sh ./build.sh

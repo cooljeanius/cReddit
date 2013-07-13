@@ -4,13 +4,15 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+	#include "config.h"
 #endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "jsmn.h"
 #include "reddit.h"
+#include "cReddit_main.h"
 #include <curl/curl.h>
 #include <ncurses.h>
 #include <form.h>
@@ -128,6 +130,7 @@ void showSubreddit(char *subreddit)
 
 int main(int argc, char *argv[])
 {
+	printf("\n Message for security and/or debugging: \n This program's path is %s and it is running with %i argument(s). \n", argv[0], argc); // Statement for debugging
     initscr();
     raw(); // We want character for character input
     keypad(stdscr,1); // Enable extra keys like arrowkeys

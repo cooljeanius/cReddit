@@ -11,13 +11,16 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([foreign 1.14 no-installinfo -Wall])
 AM_MAINTAINER_MODE
 AC_EXEEXT
+AC_LANG([C])
 
 # Checks for programs.
 AM_PROG_CC_C_O
+AC_PROG_GCC_TRADITIONAL
 LIBCURL_CHECK_CONFIG([yes])
 AX_LIB_CURL
 AC_PATH_PROG([FLAGSORT], [flag-sort])
 AC_PATH_PROG([FLAGDEDUP], [flag-dedup])
+AC_PATH_PROG([XCODEBUILD], [xcodebuild])
 
 # TODO: use the PKG_CHECK_MODULES macro instead
 PKG_PROG_PKG_CONFIG
@@ -38,6 +41,7 @@ AX_LIB_READLINE
 AC_CHECK_HEADERS([curl/curl.h form.h ncurses.h stdio.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_C_PROTOTYPES
 AC_TYPE_SIZE_T
 
 # Checks for library functions.

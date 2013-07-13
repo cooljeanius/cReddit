@@ -36,3 +36,8 @@ Makefile
 *(Autosaved)*
 *.dSYM
 
+# Xcode junk
+*.build
+*.perspectivev3
+*.pbxuser
+
