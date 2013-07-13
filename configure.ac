@@ -48,7 +48,8 @@ AC_BAKEFILE_PRECOMP_HEADERS
 # Checks for library functions.
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memcpy strcat strcmp strcpy strlen])
+AC_FUNC_MEMCMP
+AC_CHECK_FUNCS([memcpy strcat strcmp strcpy strlen strncat strncmp strncpy])
 
 AC_CONFIG_FILES([Makefile build.sh])
 AC_OUTPUT

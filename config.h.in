@@ -140,6 +140,15 @@
 /* Define to 1 if you have the `strlen' function. */
 #undef HAVE_STRLEN
 
+/* Define to 1 if you have the `strncat' function. */
+#undef HAVE_STRNCAT
+
+/* Define to 1 if you have the `strncmp' function. */
+#undef HAVE_STRNCMP
+
+/* Define to 1 if you have the `strncpy' function. */
+#undef HAVE_STRNCPY
+
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
 
