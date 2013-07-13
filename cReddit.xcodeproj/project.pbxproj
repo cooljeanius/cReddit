@@ -13,6 +13,7 @@
 		6183E1981791ECC90039B7DA /* jsmn.h in Headers */ = {isa = PBXBuildFile; fileRef = 6183E17A1791EBBB0039B7DA /* jsmn.h */; };
 		6183E1991791ECC90039B7DA /* reddit.h in Headers */ = {isa = PBXBuildFile; fileRef = 6183E17C1791EBBB0039B7DA /* reddit.h */; };
 		6183E1C21791EF720039B7DA /* cReddit_main.h in Headers */ = {isa = PBXBuildFile; fileRef = 6183E1C11791EF720039B7DA /* cReddit_main.h */; };
+		6183E2331791FB400039B7DA /* cReddit_prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 6183E2321791FB400039B7DA /* cReddit_prefix.pch */; };
 		8DD76FAC0486AB0100D96B5E /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* main.c */; settings = {ATTRIBUTES = (); }; };
 		8DD76FB00486AB0100D96B5E /* cReddit.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* cReddit.1 */; };
 /* End PBXBuildFile section */
@@ -41,6 +42,7 @@
 		6183E1831791EBE70039B7DA /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = build.sh; sourceTree = "<group>"; };
 		6183E1841791EBE70039B7DA /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		6183E1C11791EF720039B7DA /* cReddit_main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.objj.h; path = cReddit_main.h; sourceTree = "<group>"; };
+		6183E2321791FB400039B7DA /* cReddit_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cReddit_prefix.pch; sourceTree = "<group>"; };
 		8DD76FB20486AB0100D96B5E /* cReddit */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = cReddit; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A0FF2C0290799A04C91782 /* cReddit.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = cReddit.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -64,6 +66,7 @@
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
+				6183E2321791FB400039B7DA /* cReddit_prefix.pch */,
 			);
 			name = cReddit;
 			sourceTree = "<group>";
@@ -110,6 +113,7 @@
 				6183E1971791ECC90039B7DA /* config.h in Headers */,
 				6183E1981791ECC90039B7DA /* jsmn.h in Headers */,
 				6183E1991791ECC90039B7DA /* reddit.h in Headers */,
+				6183E2331791FB400039B7DA /* cReddit_prefix.pch in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,6 +245,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = cReddit_prefix.pch;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_GLOBAL_CONSTRUCTORS = YES;
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
@@ -281,6 +286,7 @@
 				SDKROOT = macosx10.6;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = "-Wall";
 			};
 			name = Debug;
 		};

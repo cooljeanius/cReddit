@@ -43,6 +43,7 @@ AC_CHECK_HEADERS([curl/curl.h form.h ncurses.h stdio.h])
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_PROTOTYPES
 AC_TYPE_SIZE_T
+AC_BAKEFILE_PRECOMP_HEADERS
 
 # Checks for library functions.
 AC_FUNC_MALLOC

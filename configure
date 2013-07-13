@@ -626,6 +626,11 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+BK_MAKE_PCH
+ICC_PCH_USE_SWITCH
+ICC_PCH_CREATE_SWITCH
+ICC_PCH
+GCC_PCH
 FORM_LIB
 MENU_LIB
 PANEL_LIB
@@ -754,6 +759,7 @@ with_curl_prefix
 with_curl_exec_prefix
 with_ncurses
 with_ncursesw
+enable_precomp_headers
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1402,6 +1408,8 @@ Optional Features:
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+  --disable-precomp-headers
+                          don't use precompiled headers even if compiler can
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -7497,6 +7505,162 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 fi
+
+
+
+    # Check whether --enable-precomp-headers was given.
+if test "${enable_precomp_headers+set}" = set; then :
+  enableval=$enable_precomp_headers; bk_use_pch="$enableval"
+fi
+
+
+    GCC_PCH=0
+    ICC_PCH=0
+    USE_PCH=0
+    BK_MAKE_PCH=""
+
+    case ${BAKEFILE_HOST} in
+        *-*-cygwin* )
+                                                bk_use_pch="no"
+            ;;
+    esac
+
+    if test "x$bk_use_pch" = "x" -o "x$bk_use_pch" = "xyes" ; then
+        if test "x$GCC" = "xyes"; then
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking if the compiler supports precompiled headers" >&5
+$as_echo_n "checking if the compiler supports precompiled headers... " >&6; }
+            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+                    #if !defined(__GNUC__) || !defined(__GNUC_MINOR__)
+                        There is no PCH support
+                    #endif
+                    #if (__GNUC__ < 3)
+                        There is no PCH support
+                    #endif
+                    #if (__GNUC__ == 3) && \
+                       ((!defined(__APPLE_CC__) && (__GNUC_MINOR__ < 4)) || \
+                       ( defined(__APPLE_CC__) && (__GNUC_MINOR__ < 3))) || \
+                       ( defined(__INTEL_COMPILER) )
+                        There is no PCH support
+                    #endif
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                    GCC_PCH=1
+
+else
+
+                    if test "$INTELCXX8" = "yes"; then
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                        ICC_PCH=1
+                        if test "$INTELCXX10" = "yes"; then
+                            ICC_PCH_CREATE_SWITCH="-pch-create"
+                            ICC_PCH_USE_SWITCH="-pch-use"
+                        else
+                            ICC_PCH_CREATE_SWITCH="-create-pch"
+                            ICC_PCH_USE_SWITCH="-use-pch"
+                        fi
+                    else
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                    fi
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+            if test $GCC_PCH = 1 -o $ICC_PCH = 1 ; then
+                USE_PCH=1
+
+D='$'
+cat <<EOF >bk-make-pch
+#!/bin/sh
+
+# This script is part of Bakefile (http://www.bakefile.org) autoconf
+# script. It is used to generated precompiled headers.
+#
+# Permission is given to use this file in any way.
+
+outfile="${D}{1}"
+header="${D}{2}"
+shift
+shift
+
+builddir=\`echo ${D}outfile | sed -e 's,/\\.pch/.*${D},,g'\`
+
+compiler=""
+headerfile=""
+
+while test ${D}{#} -gt 0; do
+    add_to_cmdline=1
+    case "${D}{1}" in
+        -I* )
+            incdir=\`echo ${D}{1} | sed -e 's/-I\\(.*\\)/\\1/g'\`
+            if test "x${D}{headerfile}" = "x" -a -f "${D}{incdir}/${D}{header}" ; then
+                headerfile="${D}{incdir}/${D}{header}"
+            fi
+        ;;
+        -use-pch|-use_pch|-pch-use )
+            shift
+            add_to_cmdline=0
+        ;;
+    esac
+    if test ${D}add_to_cmdline = 1 ; then
+        compiler="${D}{compiler} ${D}{1}"
+    fi
+    shift
+done
+
+if test "x${D}{headerfile}" = "x" ; then
+    echo "error: can't find header ${D}{header} in include paths" >&2
+else
+    if test -f ${D}{outfile} ; then
+        rm -f ${D}{outfile}
+    else
+        mkdir -p \`dirname ${D}{outfile}\`
+    fi
+    depsfile="${D}{builddir}/.deps/\`echo ${D}{outfile} | tr '/.' '__'\`.d"
+    mkdir -p ${D}{builddir}/.deps
+    if test "x${GCC_PCH}" = "x1" ; then
+        # can do this because gcc is >= 3.4:
+        ${D}{compiler} -o ${D}{outfile} -MMD -MF "${D}{depsfile}" "${D}{headerfile}"
+    elif test "x${ICC_PCH}" = "x1" ; then
+        filename=pch_gen-${D}${D}
+        file=${D}{filename}.c
+        dfile=${D}{filename}.d
+        cat > ${D}file <<EOT
+#include "${D}header"
+EOT
+        # using -MF icc complains about differing command lines in creation/use
+        ${D}compiler -c ${ICC_PCH_CREATE_SWITCH} ${D}outfile -MMD ${D}file && \\
+          sed -e "s,^.*:,${D}outfile:," -e "s, ${D}file,," < ${D}dfile > ${D}depsfile && \\
+          rm -f ${D}file ${D}dfile ${D}{filename}.o
+    fi
+    exit ${D}{?}
+fi
+EOF
+
+                chmod +x bk-make-pch
+                                                                BK_MAKE_PCH="`pwd`/bk-make-pch"
+            fi
+        fi
+    fi
+
+
+
+
+
+
 
 
 # Checks for library functions.

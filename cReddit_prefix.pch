@@ -1,0 +1,13 @@
+/*
+ *  cReddit_prefix.pch
+ *  cReddit
+ *
+ *  Created by Eric Gallager on 7/13/13.
+ *
+ */
+
+#ifdef HAVE_CONFIG_H
+	#include "config.h"
+#endif
+
+#include "reddit.h"
