@@ -11,6 +11,6 @@ build system now, to build that way, do:
 
 ```
 ./configure
-make build
+make build_script
 ```
 
