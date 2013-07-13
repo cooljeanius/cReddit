@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -ex
+
+# flag-dedup and flag-sort did not seem to be working so I removed them
+
+@CC@ @CFLAGS@ @CURL_CFLAGS@ @DEFS@ -Wall -o cReddit main.c reddit.c jsmn.c @CURSES_LIB@ @CURL_LIBS@ @LDFLAGS@
+
+# I originally used "@AM_CFLAGS@" instead of "-Wall" but that didn't get replaced properly...

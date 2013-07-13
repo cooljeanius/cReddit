@@ -15,3 +15,24 @@
 *.exe
 *.out
 *.app
+cReddit
+
+# Autotools cruft
+*.log
+*.cache
+conftest*
+confdefs*
+*~
+stamp-h*
+
+# Files that should be regenerated to be specific to the system
+config.h
+*.status
+Makefile.in
+Makefile
+
+# OS X junk
+*DS_Store*
+*(Autosaved)*
+*.dSYM
+

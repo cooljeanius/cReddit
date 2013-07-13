@@ -1,3 +1,8 @@
+/*
+ * reddit.c
+ *
+ */
+
 #include "reddit.h"
 #include "ncurses.h"
 
@@ -15,7 +20,7 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
 
     mem->memory = realloc(mem->memory, mem->size + realsize + 1);
     if (mem->memory == NULL) {
-        /* out of memory! */ 
+        /* out of memory! */
         printf("not enough memory (realloc returned NULL)\n");
         exit(EXIT_FAILURE);
     }
@@ -27,25 +32,25 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
     return realsize;
 }
 
-char* prepend(char *pre, char *str) 
+char* prepend(char *pre, char *str)
 {
     char* newString = malloc(sizeof(char) * strlen(pre) + sizeof(char) * strlen(str));
     strcpy(newString,pre);
     strcat(newString,str);
     return newString;
-} 
+}
 
 void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int * postCount)
 {
     CURL *curl_handle;
     struct MemoryStruct chunk;
-    chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */ 
-    chunk.size = 0;   
+    chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */
+    chunk.size = 0;
     curl_handle = curl_easy_init();
     if(!startsWith("/r/",sub)){
         sub = prepend("/r/",sub);
-    }   
-    //GET request 
+    }
+    // GET request
     int url_size = REDDIT_URL_BASE_LENGTH + strlen(sub) + strlen(sorting);
     char url[url_size];
     strcpy(url,"http://reddit.com");
@@ -59,10 +64,10 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
     curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "cReddit/0.0.1 opensource mainline by /u/blacksmid"); //Our user-agent!
 
-    //Lets request
+    // Let us request...
     curl_easy_perform(curl_handle);
 
-    //and cleanup
+    // ...and cleanup
     curl_easy_cleanup(curl_handle);
 
     const char *js;
@@ -74,7 +79,7 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
     r = jsmn_parse(&p, js, t, 25000);
     int i =0;
     char buffer[2048];
-    
+
     int atPost = 0;
 
     for(i = 0; i < 25000; ++i)
@@ -94,7 +99,7 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
             tmp[t[i].end-t[i].start] = 0;
             strcpy(postList[atPost].id,tmp);
             free(tmp);
-        }		
+        }
         if(strcmp("title",buffer) == 0)
         {
             i++;
@@ -148,27 +153,27 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
 {
     CURL *curl_handle;
     struct MemoryStruct chunk;
-    chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */ 
-    chunk.size = 0;   
+    chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */
+    chunk.size = 0;
     curl_handle = curl_easy_init();
 
-    //GET request 
+    // GET request
     char url[256];
     strcpy(url,"http://reddit.com/comments/");
     strcat(url,postid);
     strcat(url,"/GET.json");
     printw("Getting:%s\n",url);
-    //getch();
+    //getch(); // commented out because...?
     curl_easy_setopt(curl_handle, CURLOPT_URL, url);
     curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
     curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
     curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "cReddit/0.0.1 opensource mainline by /u/blacksmid"); //Our user-agent!
 
-    //Lets request
+    // Let us request...
     curl_easy_perform(curl_handle);
 
-    //and cleanup
+    // ...and cleanup
     curl_easy_cleanup(curl_handle);
 
     const char *js;
@@ -200,8 +205,8 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
             tmp[t[i].end-t[i].start] = 0;
             strcpy(commentList[atPost].id,tmp);
             free(tmp);
-        }		
-        /* Measured in ups and down votes, TODO
+        }
+        /* Measured in ups and down votes, commented out because this is a TODO
            if(strcmp("score",buffer) == 0)
            {
            i++;
@@ -234,7 +239,7 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
             commentList[atPost].text = malloc(t[i].end-t[i].start+1);
             strcpy(commentList[atPost].text,tmp);
             free(tmp);
-        } 
+        }
     }
     *commentCount = atPost;
     if(chunk.memory)

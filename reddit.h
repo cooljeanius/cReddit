@@ -1,3 +1,8 @@
+/*
+ * reddit.h
+ *
+ */
+
 #ifndef __REDDIT_H_
 #define __REDDIT_H_
 
@@ -6,9 +11,9 @@
 #include <string.h>
 #include "jsmn.h"
 #include <curl/curl.h>
- 
-#define REDDIT_URL_BASE_LENGTH 21 
- 
+
+#define REDDIT_URL_BASE_LENGTH 21
+
 struct MemoryStruct {
   	char *memory;
   	size_t size;
@@ -36,4 +41,4 @@ void showSubreddit(char *subreddit);
 void cleanup();
 int startsWith(char *pre, char *str);
 
-#endif 
+#endif
