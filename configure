@@ -4387,6 +4387,9 @@ $as_echo "$ac_cv_prog_gcc_traditional" >&6; }
 fi
 
 
+# Not sure which version of libcurl is actually required
+# (I am just using the latest version here)
+
 
 
 
@@ -4566,11 +4569,11 @@ fi
 $as_echo "$libcurl_cv_lib_curl_version" >&6; }
 
         _libcurl_version=`echo $libcurl_cv_lib_curl_version | $_libcurl_version_parse`
-        _libcurl_wanted=`echo 0 | $_libcurl_version_parse`
+        _libcurl_wanted=`echo 7.31 | $_libcurl_version_parse`
 
         if test $_libcurl_wanted -gt 0 ; then
-           { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libcurl >= version " >&5
-$as_echo_n "checking for libcurl >= version ... " >&6; }
+           { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libcurl >= version 7.31" >&5
+$as_echo_n "checking for libcurl >= version 7.31... " >&6; }
 if ${libcurl_cv_lib_version_ok+:} false; then :
   $as_echo_n "(cached) " >&6
 else
@@ -4968,7 +4971,7 @@ else
 
 fi
 
-      if test x"" != x; then :
+      if test x"7.31" != x; then :
 
 		if test x"'s/^libcurl\ \+//'" != x; then :
 
@@ -4980,8 +4983,8 @@ else
 
 fi
 
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for curl ($curl_version) >= " >&5
-$as_echo_n "checking for curl ($curl_version) >= ... " >&6; }
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for curl ($curl_version) >= 7.31" >&5
+$as_echo_n "checking for curl ($curl_version) >= 7.31... " >&6; }
 
 
 
@@ -5001,7 +5004,7 @@ $as_echo_n "checking for curl ($curl_version) >= ... " >&6; }
                      -e 's/[^0-9]//g'`
 
 
-  ax_compare_version_B=`echo "" | sed -e 's/\([0-9]*\)/Z\1Z/g' \
+  ax_compare_version_B=`echo "7.31" | sed -e 's/\([0-9]*\)/Z\1Z/g' \
                      -e 's/Z\([0-9]\)Z/Z0\1Z/g' \
                      -e 's/Z\([0-9][0-9]\)Z/Z0\1Z/g' \
                      -e 's/Z\([0-9][0-9][0-9]\)Z/Z0\1Z/g' \
@@ -5049,6 +5052,9 @@ fi
 
 
 
+
+# Actual use of flag-sort and flag-dedup is currently disabled, but keep
+# the check in case I add support for them back in later
 # Extract the first word of "flag-sort", so it can be a program name with args.
 set dummy flag-sort; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -5293,6 +5299,8 @@ $as_echo "no" >&6; }
 fi
 
 # Checks for libraries.
+# TODO: check for these functions in libcurl without -lcurl getting
+# appended to LD_FLAGS four separate times
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for curl_easy_init in -lcurl" >&5
 $as_echo_n "checking for curl_easy_init in -lcurl... " >&6; }
 if ${ac_cv_lib_curl_curl_easy_init+:} false; then :
