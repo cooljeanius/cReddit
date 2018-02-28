@@ -13,7 +13,7 @@
 static jsmntok_t *jsmn_alloc_token(jsmn_parser *parser,
 		jsmntok_t *tokens, size_t num_tokens) {
 	jsmntok_t *tok;
-	if (parser->toknext >= num_tokens) {
+	if ((size_t)parser->toknext >= num_tokens) {
 		return NULL;
 	}
 	tok = &tokens[parser->toknext++];
@@ -30,55 +30,61 @@ static jsmntok_t *jsmn_alloc_token(jsmn_parser *parser,
  */
 static void jsmn_fill_token(jsmntok_t *token, jsmntype_t type,
                             int start, int end) {
-	token->type = type;
-	token->start = start;
-	token->end = end;
-	token->size = 0;
+    if (token == NULL)
+	return;
+    token->type = type;
+    token->start = start;
+    token->end = end;
+    token->size = 0;
 }
 
 /**
  * Fills next available token with JSON primitive.
  */
 static jsmnerr_t jsmn_parse_primitive(jsmn_parser *parser, const char *js,
-		jsmntok_t *tokens, size_t num_tokens) {
-	jsmntok_t *token;
-	int start;
+				      jsmntok_t *tokens, size_t num_tokens) {
+    jsmntok_t *token;
+    int start;
 
-	start = parser->pos;
+    start = parser->pos;
 
-	for (; js[parser->pos] != '\0'; parser->pos++) {
-		switch (js[parser->pos]) {
+    for (; js[parser->pos] != '\0'; parser->pos++) {
+	switch (js[parser->pos]) {
 #ifndef JSMN_STRICT
-			/* In strict mode primitive must be followed by "," or "}" or "]" */
-			case ':':
+		/* In strict mode primitive must be followed by "," or "}" or "]" */
+	    case ':':
 #endif
-			case '\t' : case '\r' : case '\n' : case ' ' :
-			case ','  : case ']'  : case '}' :
-				goto found;
-		}
-		if (js[parser->pos] < 32 || js[parser->pos] >= 127) {
-			parser->pos = start;
-			return JSMN_ERROR_INVAL;
-		}
+	    case '\t' : case '\r' : case '\n' : case ' ' :
+	    case ','  : case ']'  : case '}' :
+		goto found;
 	}
+	if (js[parser->pos] < 32 || js[parser->pos] >= 127) {
+	    parser->pos = start;
+	    return JSMN_ERROR_INVAL;
+	}
+    }
 #ifdef JSMN_STRICT
-	/* In strict mode primitive must be followed by a comma/object/array */
-	parser->pos = start;
-	return JSMN_ERROR_PART;
+    /* In strict mode primitive must be followed by a comma/object/array */
+    parser->pos = start;
+    return JSMN_ERROR_PART;
 #endif
 
 found:
-	token = jsmn_alloc_token(parser, tokens, num_tokens);
-	if (token == NULL) {
-		parser->pos = start;
-		return JSMN_ERROR_NOMEM;
-	}
-	jsmn_fill_token(token, JSMN_PRIMITIVE, start, parser->pos);
+    token = jsmn_alloc_token(parser, tokens, num_tokens);
+    if (token == NULL) {
+	parser->pos = start;
+	return JSMN_ERROR_NOMEM;
+    }
+    jsmn_fill_token(token, JSMN_PRIMITIVE, start, (int)parser->pos);
 #ifdef JSMN_PARENT_LINKS
-	token->parent = parser->toksuper;
-#endif
-	parser->pos--;
-	return JSMN_SUCCESS;
+    if (token == NULL) {
+	parser->pos = start;
+	return JSMN_ERROR_NOMEM;
+    }
+    token->parent = parser->toksuper;
+#endif /* JSMN_PARENT_LINKS */
+    parser->pos--;
+    return JSMN_SUCCESS;
 }
 
 /**
@@ -103,7 +109,8 @@ static jsmnerr_t jsmn_parse_string(jsmn_parser *parser, const char *js,
 				parser->pos = start;
 				return JSMN_ERROR_NOMEM;
 			}
-			jsmn_fill_token(token, JSMN_STRING, start+1, parser->pos);
+			jsmn_fill_token(token, JSMN_STRING, (start + 1),
+					(int)parser->pos);
 #ifdef JSMN_PARENT_LINKS
 			token->parent = parser->toksuper;
 #endif
@@ -149,7 +156,8 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, jsmntok_t *tokens,
 		c = js[parser->pos];
 		switch (c) {
 			case '{': case '[':
-				token = jsmn_alloc_token(parser, tokens, num_tokens);
+				token = jsmn_alloc_token(parser, tokens,
+							 (size_t)num_tokens);
 				if (token == NULL)
 					return JSMN_ERROR_NOMEM;
 				if (parser->toksuper != -1) {
@@ -207,7 +215,8 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, jsmntok_t *tokens,
 #endif
 				break;
 			case '\"':
-				r = jsmn_parse_string(parser, js, tokens, num_tokens);
+				r = jsmn_parse_string(parser, js, tokens,
+						      (size_t)num_tokens);
 				if (r < 0) return r;
 				if (parser->toksuper != -1)
 					tokens[parser->toksuper].size++;
@@ -223,7 +232,8 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, jsmntok_t *tokens,
 			/* In non-strict mode every unquoted value is a primitive */
 			default:
 #endif
-				r = jsmn_parse_primitive(parser, js, tokens, num_tokens);
+				r = jsmn_parse_primitive(parser, js, tokens,
+							 (size_t)num_tokens);
 				if (r < 0) return r;
 				if (parser->toksuper != -1)
 					tokens[parser->toksuper].size++;

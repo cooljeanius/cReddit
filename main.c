@@ -24,7 +24,7 @@ void buildScreen(char **text, int selected, int size)
 {
     clear();
     start_color();
-    init_pair(1,COLOR_RED,COLOR_YELLOW);
+    init_pair((short)1, (short)COLOR_RED, (short)COLOR_YELLOW);
     int i = 0;
     for(i = 0; i != size; ++i)
     {
@@ -72,7 +72,7 @@ void showSubreddit(char *subreddit)
     buildScreen(text,selected,displayCount); // And print it!
     int c;
     struct comments cList[500];
-    while((c = wgetch(stdscr))) // Should probably be "==" instead of "=", but just using extra parentheses to silence the warning for now...
+    while((c = wgetch(stdscr))) // just using extra parentheses to silence the warning for now...
     {
         if(c == 'q') // Let us make a break key, so that I do not have to close the tab like last time :S
             break; // YEA FUCK YOU "WHILE"!
@@ -102,7 +102,9 @@ void showSubreddit(char *subreddit)
                 char *ctext[cdisplayCount]; // Text buffer for each line
                 for(u = 0; u != cdisplayCount; ++u)
                 {
-                    //printw("starting"); // commented out because...?
+#if 0
+                    printw("starting"); // ifdefed out because...?
+#endif /* 0 */
                     if(cList[u].id == 0 || cList[u].text == NULL || cList[u].id == NULL || cList[u].author == NULL)
                         continue;
                     char cbuffer[2048];
@@ -110,10 +112,12 @@ void showSubreddit(char *subreddit)
                     strcat(cbuffer," ");
                     strcat(cbuffer,cList[u].author);
                     // Votes will have to be implemented with up votes minus
-                    // downvotes (currently commented out because...?)
-                    //strcat(cbuffer," (");
-                    //strcat(cbuffer,cList[u].votes);
-                    //strcat(cbuffer,")");
+                    // downvotes (currently ifdefed out because...?)
+#if 0
+                    strcat(cbuffer," (");
+                    strcat(cbuffer,cList[u].votes);
+                    strcat(cbuffer,")");
+#endif /* 0 */
                     strcat(cbuffer," - ");
                     strcat(cbuffer,cList[u].text);
                     ctext[u] = (char*)malloc(strlen(cbuffer)); // Now let us make a small buffer that fits exactly!
@@ -121,21 +125,30 @@ void showSubreddit(char *subreddit)
                     printw("%s\n",cbuffer);
                     refresh();
                 }
-                    wgetch(stdscr);
+		wgetch(stdscr);
+		for(u = 1; u != cdisplayCount; ++u)
+                {
+		    free(ctext[u]);
+		}
+		free(commentCount);
         }
         buildScreen(text,selected,displayCount); // Print the updates!!
     }
-
+    for(i = 1; i != displayCount; ++i)
+    {
+        free(text[i]);
+    }
+    free(postCount);
 }
 
 int main(int argc, char *argv[])
 {
-	printf("\n Message for security and/or debugging: \n This program's path is %s and it is running with %i argument(s). \n", argv[0], argc); // Statement for debugging
+    printf("\n Message for security and/or debugging: \n This program's path is %s and it is running with %i argument(s). \n", argv[0], argc); // Statement for debugging
     initscr();
     raw(); // We want character for character input
-    keypad(stdscr,1); // Enable extra keys like arrowkeys
+    keypad(stdscr, (bool)1); // Enable extra keys like arrowkeys
     noecho();
-    curl_global_init(CURL_GLOBAL_ALL);
+    curl_global_init((long)CURL_GLOBAL_ALL);
 
     // In case the user does not specify an argument
     if (!argv[1]) {

@@ -631,10 +631,12 @@ ICC_PCH_USE_SWITCH
 ICC_PCH_CREATE_SWITCH
 ICC_PCH
 GCC_PCH
-FORM_LIB
-MENU_LIB
-PANEL_LIB
 CURSES_LIB
+FORM_LIBS
+MENU_LIBS
+PANEL_LIBS
+CURSES_CFLAGS
+CURSES_LIBS
 PKG_CONFIG_LIBDIR
 PKG_CONFIG_PATH
 PKG_CONFIG
@@ -776,10 +778,11 @@ CURL_LIBS
 PKG_CONFIG
 PKG_CONFIG_PATH
 PKG_CONFIG_LIBDIR
-CURSES_LIB
-PANEL_LIB
-MENU_LIB
-FORM_LIB'
+CURSES_LIBS
+CURSES_CFLAGS
+PANEL_LIBS
+MENU_LIBS
+FORM_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1440,10 +1443,12 @@ Some influential environment variables:
               directories to add to pkg-config's search path
   PKG_CONFIG_LIBDIR
               path overriding pkg-config's built-in search path
-  CURSES_LIB  linker library for Curses, e.g. -lcurses
-  PANEL_LIB   linker library for Curses Panel, e.g. -lpanel
-  MENU_LIB    linker library for Curses Menu, e.g. -lmenu
-  FORM_LIB    linker library for Curses Form, e.g. -lform
+  CURSES_LIBS linker library for Curses, e.g. -lcurses
+  CURSES_CFLAGS
+              preprocessor flags for Curses, e.g. -I/usr/include/ncursesw
+  PANEL_LIBS  linker library for Curses Panel, e.g. -lpanel
+  MENU_LIBS   linker library for Curses Menu, e.g. -lmenu
+  FORM_LIBS   linker library for Curses Form, e.g. -lform
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2425,7 +2430,7 @@ test -n "$target_alias" &&
   test "$program_prefix$program_suffix$program_transform_name" = \
     NONENONEs,x,x, &&
   program_prefix=${target_alias}-
-am__api_version='1.14'
+am__api_version='1.15'
 
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -2597,8 +2602,8 @@ test "$program_suffix" != NONE &&
 ac_script='s/[\\$]/&&/g;s/;s,x,x,$//'
 program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
 
-# expand $ac_aux_dir to an absolute path
-am_aux_dir=`cd $ac_aux_dir && pwd`
+# Expand $ac_aux_dir to an absolute path.
+am_aux_dir=`cd "$ac_aux_dir" && pwd`
 
 if test x"${MISSING+set}" != xset; then
   case $am_aux_dir in
@@ -2617,7 +2622,7 @@ else
 $as_echo "$as_me: WARNING: 'missing' script is too old or missing" >&2;}
 fi
 
-if test x"${install_sh}" != xset; then
+if test x"${install_sh+set}" != xset; then
   case $am_aux_dir in
   *\ * | *\	*)
     install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
@@ -2945,8 +2950,8 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 # <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
 mkdir_p='$(MKDIR_P)'
 
-# We need awk for the "check" target.  The system "awk" is bad on
-# some platforms.
+# We need awk for the "check" target (and possibly the TAP driver).  The
+# system "awk" is bad on some platforms.
 # Always define AMTAR for backward compatibility.  Yes, it's still used
 # in the wild :-(  We should find a proper way to deprecate it ...
 AMTAR='$${TAR-tar}'
@@ -3004,6 +3009,7 @@ END
   fi
 fi
 
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable maintainer-specific portions of Makefiles" >&5
 $as_echo_n "checking whether to enable maintainer-specific portions of Makefiles... " >&6; }
     # Check whether --enable-maintainer-mode was given.
@@ -3032,7 +3038,6 @@ ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
 
 # Checks for programs.
 DEPDIR="${am__leading_dot}deps"
@@ -4388,7 +4393,7 @@ fi
 
 
 # Not sure which version of libcurl is actually required
-# (I am just using the latest version here)
+# (I am just using the latest version here, as of when I first made this)
 
 
 
@@ -4868,7 +4873,7 @@ fi
 
 
 
-  if test x$CURL_CFLAGS != x -o x$CURL_LIBS != x; then :
+  if test x"$CURL_CFLAGS" != x -o x"$CURL_LIBS" != x; then :
 
 
 
@@ -4944,14 +4949,14 @@ fi
 done
 test -n "$CURL_CONFIG" || CURL_CONFIG="no"
 
-    if test "$CURL_CONFIG" == "no"; then :
+    if test "$CURL_CONFIG" = "no"; then :
 
       :
 
 
 else
 
-            if test x"" == x; then :
+            if test x"" = x; then :
 
 	CURL_CFLAGS="`$CURL_CONFIG $curl_config_args --cflags`"
 
@@ -4961,7 +4966,7 @@ else
 
 fi
 
-            if test x"" == x; then :
+            if test x"" = x; then :
 
 	CURL_LIBS="`$CURL_CONFIG $curl_config_args --libs`"
 
@@ -5047,7 +5052,6 @@ fi
 fi
 
 fi
-
 
 
 
@@ -5173,7 +5177,6 @@ else
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 fi
-
 
 
 # TODO: use the PKG_CHECK_MODULES macro instead
@@ -5529,6 +5532,7 @@ fi
 
 
 
+
 # Check whether --with-ncurses was given.
 if test "${with_ncurses+set}" = set; then :
   withval=$with_ncurses;
@@ -5546,6 +5550,8 @@ fi
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     if test "x$with_ncurses" = xyes || test "x$with_ncursesw" = xyes; then :
   ax_with_plaincurses=no
 else
@@ -5555,17 +5561,68 @@ fi
     ax_cv_curses_which=no
 
     # Test for NcursesW
+    if test "x$CURSES_LIBS" = x && test "x$with_ncursesw" != xno; then :
 
-    if test "x$CURSES_LIB" = x && test "x$with_ncursesw" != xno; then :
 
-        LIBS="$ax_saved_LIBS -lncursesw"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ncursesw via pkg-config" >&5
+$as_echo_n "checking for ncursesw via pkg-config... " >&6; }
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for NcursesW wide-character library" >&5
-$as_echo_n "checking for NcursesW wide-character library... " >&6; }
+
+
+    if test -n "$_ax_cv_ncursesw_libs"; then
+    pkg_cv__ax_cv_ncursesw_libs="$_ax_cv_ncursesw_libs"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"ncursesw\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "ncursesw") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv__ax_cv_ncursesw_libs=`$PKG_CONFIG --libs "ncursesw" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+    if test -n "$_ax_cv_ncursesw_cppflags"; then
+    pkg_cv__ax_cv_ncursesw_cppflags="$_ax_cv_ncursesw_cppflags"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"ncursesw\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "ncursesw") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv__ax_cv_ncursesw_cppflags=`$PKG_CONFIG --cflags "ncursesw" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+    if test "x$pkg_failed" = "xyes" || test "x$pkg_failed" = "xuntried"; then :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+        # No suitable .pc file found, have to find flags via fallback
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ncursesw via fallback" >&5
+$as_echo_n "checking for ncursesw via fallback... " >&6; }
 if ${ax_cv_ncursesw+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
+            $as_echo
+            pkg_cv__ax_cv_ncursesw_libs="-lncursesw"
+            pkg_cv__ax_cv_ncursesw_cppflags="-D_GNU_SOURCE $CURSES_CFLAGS"
+            LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_ncursesw_libs"
+            CPPFLAGS="$ax_saved_CPPFLAGS $pkg_cv__ax_cv_ncursesw_cppflags"
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr() with $pkg_cv__ax_cv_ncursesw_libs" >&5
+$as_echo_n "checking for initscr() with $pkg_cv__ax_cv_ncursesw_libs... " >&6; }
             cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -5585,9 +5642,80 @@ return initscr ();
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_ncursesw=yes
+
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for nodelay() with $pkg_cv__ax_cv_ncursesw_libs" >&5
+$as_echo_n "checking for nodelay() with $pkg_cv__ax_cv_ncursesw_libs... " >&6; }
+                    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char nodelay ();
+int
+main ()
+{
+return nodelay ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+
+                        ax_cv_ncursesw=yes
+
 else
-  ax_cv_ncursesw=no
+
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                        pkg_cv__ax_cv_ncursesw_libs="$pkg_cv__ax_cv_ncursesw_libs -ltinfow"
+                        LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_ncursesw_libs"
+
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for nodelay() with $pkg_cv__ax_cv_ncursesw_libs" >&5
+$as_echo_n "checking for nodelay() with $pkg_cv__ax_cv_ncursesw_libs... " >&6; }
+                        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char nodelay ();
+int
+main ()
+{
+return nodelay ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+
+                            ax_cv_ncursesw=yes
+
+else
+
+                            ax_cv_ncursesw=no
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+else
+
+                    ax_cv_ncursesw=no
+
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
@@ -5595,6 +5723,19 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_ncursesw" >&5
 $as_echo "$ax_cv_ncursesw" >&6; }
+
+else
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+        # Found .pc file, using its information
+        LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_ncursesw_libs"
+        CPPFLAGS="$ax_saved_CPPFLAGS $pkg_cv__ax_cv_ncursesw_cppflags"
+        ax_cv_ncursesw=yes
+
+fi
+
+
         if test "x$ax_cv_ncursesw" = xno && test "x$with_ncursesw" = xyes; then :
 
             as_fn_error $? "--with-ncursesw specified but could not find NcursesW library" "$LINENO" 5
@@ -5605,7 +5746,8 @@ fi
 
             ax_cv_curses=yes
             ax_cv_curses_which=ncursesw
-            CURSES_LIB="-lncursesw"
+            CURSES_LIBS="$pkg_cv__ax_cv_ncursesw_libs"
+            CURSES_CFLAGS="$pkg_cv__ax_cv_ncursesw_cppflags"
 
 $as_echo "#define HAVE_NCURSESW 1" >>confdefs.h
 
@@ -5815,19 +5957,72 @@ fi
 fi
 
 fi
+    unset pkg_cv__ax_cv_ncursesw_libs
+    unset pkg_cv__ax_cv_ncursesw_cppflags
 
     # Test for Ncurses
+    if test "x$CURSES_LIBS" = x && test "x$with_ncurses" != xno && test "x$ax_cv_curses_which" = xno; then :
 
-    if test "x$CURSES_LIB" = x && test "x$with_ncurses" != xno && test "x$ax_cv_curses_which" = xno; then :
 
-        LIBS="$ax_saved_LIBS -lncurses"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ncurses via pkg-config" >&5
+$as_echo_n "checking for ncurses via pkg-config... " >&6; }
 
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Ncurses library" >&5
-$as_echo_n "checking for Ncurses library... " >&6; }
+
+
+    if test -n "$_ax_cv_ncurses_libs"; then
+    pkg_cv__ax_cv_ncurses_libs="$_ax_cv_ncurses_libs"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"ncurses\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "ncurses") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv__ax_cv_ncurses_libs=`$PKG_CONFIG --libs "ncurses" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+    if test -n "$_ax_cv_ncurses_cppflags"; then
+    pkg_cv__ax_cv_ncurses_cppflags="$_ax_cv_ncurses_cppflags"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"ncurses\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "ncurses") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv__ax_cv_ncurses_cppflags=`$PKG_CONFIG --cflags "ncurses" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+    if test "x$pkg_failed" = "xyes" || test "x$pkg_failed" = "xuntried"; then :
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+        # No suitable .pc file found, have to find flags via fallback
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ncurses via fallback" >&5
+$as_echo_n "checking for ncurses via fallback... " >&6; }
 if ${ax_cv_ncurses+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
+            $as_echo
+            pkg_cv__ax_cv_ncurses_libs="-lncurses"
+            pkg_cv__ax_cv_ncurses_cppflags="-D_GNU_SOURCE $CURSES_CFLAGS"
+            LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_ncurses_libs"
+            CPPFLAGS="$ax_saved_CPPFLAGS $pkg_cv__ax_cv_ncurses_cppflags"
+
+            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for initscr() with $pkg_cv__ax_cv_ncurses_libs" >&5
+$as_echo_n "checking for initscr() with $pkg_cv__ax_cv_ncurses_libs... " >&6; }
             cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -5847,9 +6042,81 @@ return initscr ();
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_ncurses=yes
+
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for nodelay() with $pkg_cv__ax_cv_ncurses_libs" >&5
+$as_echo_n "checking for nodelay() with $pkg_cv__ax_cv_ncurses_libs... " >&6; }
+                    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char nodelay ();
+int
+main ()
+{
+return nodelay ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+
+                        ax_cv_ncurses=yes
+
 else
-  ax_cv_ncurses=no
+
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                        pkg_cv__ax_cv_ncurses_libs="$pkg_cv__ax_cv_ncurses_libs -ltinfo"
+
+                        LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_ncurses_libs"
+
+                        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for nodelay() with $pkg_cv__ax_cv_ncurses_libs" >&5
+$as_echo_n "checking for nodelay() with $pkg_cv__ax_cv_ncurses_libs... " >&6; }
+                        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char nodelay ();
+int
+main ()
+{
+return nodelay ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+
+                            ax_cv_ncurses=yes
+
+else
+
+                            ax_cv_ncurses=no
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+else
+
+                    ax_cv_ncurses=no
+
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
@@ -5857,6 +6124,19 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_ncurses" >&5
 $as_echo "$ax_cv_ncurses" >&6; }
+
+else
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+        # Found .pc file, using its information
+        LIBS="$ax_saved_LIBS $pkg_cv__ax_cv_ncurses_libs"
+        CPPFLAGS="$ax_saved_CPPFLAGS $pkg_cv__ax_cv_ncurses_cppflags"
+        ax_cv_ncurses=yes
+
+fi
+
+
         if test "x$ax_cv_ncurses" = xno && test "x$with_ncurses" = xyes; then :
 
             as_fn_error $? "--with-ncurses specified but could not find Ncurses library" "$LINENO" 5
@@ -5867,7 +6147,8 @@ fi
 
             ax_cv_curses=yes
             ax_cv_curses_which=ncurses
-            CURSES_LIB="-lncurses"
+            CURSES_LIBS="$pkg_cv__ax_cv_ncurses_libs"
+            CURSES_CFLAGS="$pkg_cv__ax_cv_ncurses_cppflags"
 
 $as_echo "#define HAVE_NCURSES 1" >>confdefs.h
 
@@ -5993,14 +6274,15 @@ fi
 fi
 
 fi
+    unset pkg_cv__ax_cv_ncurses_libs
+    unset pkg_cv__ax_cv_ncurses_cppflags
 
-    # Test for plain Curses (or if CURSES_LIB was set by user)
-
+    # Test for plain Curses (or if CURSES_LIBS was set by user)
     if test "x$with_plaincurses" != xno && test "x$ax_cv_curses_which" = xno; then :
 
-        if test "x$CURSES_LIB" != x; then :
+        if test "x$CURSES_LIBS" != x; then :
 
-            LIBS="$ax_saved_LIBS $CURSES_LIB"
+            LIBS="$ax_saved_LIBS $CURSES_LIBS"
 
 else
 
@@ -6048,9 +6330,9 @@ $as_echo "$ax_cv_plaincurses" >&6; }
 
             ax_cv_curses=yes
             ax_cv_curses_which=plaincurses
-            if test "x$CURSES_LIB" = x; then :
+            if test "x$CURSES_LIBS" = x; then :
 
-                CURSES_LIB="-lcurses"
+                CURSES_LIBS="-lcurses"
 
 fi
 
@@ -6282,6 +6564,10 @@ fi
 fi
 
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -6289,19 +6575,22 @@ fi
 
 
 
-    if test "x$PANEL_LIB" != x; then :
+    if test "x$PANEL_LIBS" != x; then :
 
 
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Panel library with panel.h" >&5
 $as_echo_n "checking for Curses Panel library with panel.h... " >&6; }
 if ${ax_cv_header_panel_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS $PANEL_LIB $CURSES_LIB"
+        LIBS="$ax_saved_LIBS $PANEL_LIBS $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6342,10 +6631,18 @@ $as_echo "#define HAVE_PANEL_H 1" >>confdefs.h
 
 else
 
-        ax_cv_panel=no
+        if test "x$ax_cv_panel" = xyes; then :
+
+else
+  ax_cv_panel=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -6357,13 +6654,16 @@ else
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Panel library with ncursesw/panel.h" >&5
 $as_echo_n "checking for Curses Panel library with ncursesw/panel.h... " >&6; }
 if ${ax_cv_header_ncursesw_panel_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lpanelw $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lpanelw $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6394,7 +6694,7 @@ $as_echo "$ax_cv_header_ncursesw_panel_h" >&6; }
     if test "x$ax_cv_header_ncursesw_panel_h" = xyes; then :
 
         ax_cv_panel=yes
-        PANEL_LIB="-lpanelw"
+        PANEL_LIBS="-lpanelw"
 
 $as_echo "#define HAVE_PANEL 1" >>confdefs.h
 
@@ -6404,10 +6704,18 @@ $as_echo "#define HAVE_NCURSESW_PANEL_H 1" >>confdefs.h
 
 else
 
-        ax_cv_panel=no
+        if test "x$ax_cv_panel" = xyes; then :
+
+else
+  ax_cv_panel=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -6417,13 +6725,86 @@ elif test "x$ax_cv_curses_which" = xncurses; then :
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Panel library with panel.h" >&5
+$as_echo_n "checking for Curses Panel library with panel.h... " >&6; }
+if ${ax_cv_header_panel_h+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        LIBS="$ax_saved_LIBS -lpanel $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+                #include <panel.h>
+
+int
+main ()
+{
+
+            WINDOW *win = newwin(0, 0, 0, 0);
+            PANEL *pan = new_panel(win);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_header_panel_h=yes
+else
+  ax_cv_header_panel_h=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_header_panel_h" >&5
+$as_echo "$ax_cv_header_panel_h" >&6; }
+    if test "x$ax_cv_header_panel_h" = xyes; then :
+
+        ax_cv_panel=yes
+        PANEL_LIBS="-lpanel"
+
+$as_echo "#define HAVE_PANEL 1" >>confdefs.h
+
+
+$as_echo "#define HAVE_PANEL_H 1" >>confdefs.h
+
+
+else
+
+        if test "x$ax_cv_panel" = xyes; then :
+
+else
+  ax_cv_panel=no
+fi
+
+fi
+
+    LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
+
+
+            if test x$ax_cv_panel != "xyes"; then :
+
+
+
+
+    ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Panel library with ncurses/panel.h" >&5
 $as_echo_n "checking for Curses Panel library with ncurses/panel.h... " >&6; }
 if ${ax_cv_header_ncurses_panel_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lpanel $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lpanel $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6454,7 +6835,7 @@ $as_echo "$ax_cv_header_ncurses_panel_h" >&6; }
     if test "x$ax_cv_header_ncurses_panel_h" = xyes; then :
 
         ax_cv_panel=yes
-        PANEL_LIB="-lpanel"
+        PANEL_LIBS="-lpanel"
 
 $as_echo "#define HAVE_PANEL 1" >>confdefs.h
 
@@ -6464,69 +6845,22 @@ $as_echo "#define HAVE_NCURSES_PANEL_H 1" >>confdefs.h
 
 else
 
-        ax_cv_panel=no
+        if test "x$ax_cv_panel" = xyes; then :
+
+else
+  ax_cv_panel=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
-
-
-
-    ax_saved_LIBS=$LIBS
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Panel library with panel.h" >&5
-$as_echo_n "checking for Curses Panel library with panel.h... " >&6; }
-if ${ax_cv_header_panel_h+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        LIBS="$ax_saved_LIBS -lpanel $CURSES_LIB"
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-                #include <panel.h>
-
-int
-main ()
-{
-
-            WINDOW *win = newwin(0, 0, 0, 0);
-            PANEL *pan = new_panel(win);
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_header_panel_h=yes
-else
-  ax_cv_header_panel_h=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
 
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_header_panel_h" >&5
-$as_echo "$ax_cv_header_panel_h" >&6; }
-    if test "x$ax_cv_header_panel_h" = xyes; then :
-
-        ax_cv_panel=yes
-        PANEL_LIB="-lpanel"
-
-$as_echo "#define HAVE_PANEL 1" >>confdefs.h
-
-
-$as_echo "#define HAVE_PANEL_H 1" >>confdefs.h
-
-
-else
-
-        ax_cv_panel=no
-
-fi
-    LIBS=$ax_saved_LIBS
-
-
 
 elif test "x$ax_cv_curses_which" = xplaincurses; then :
 
@@ -6534,13 +6868,16 @@ elif test "x$ax_cv_curses_which" = xplaincurses; then :
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Panel library with panel.h" >&5
 $as_echo_n "checking for Curses Panel library with panel.h... " >&6; }
 if ${ax_cv_header_panel_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lpanel $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lpanel $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6571,7 +6908,7 @@ $as_echo "$ax_cv_header_panel_h" >&6; }
     if test "x$ax_cv_header_panel_h" = xyes; then :
 
         ax_cv_panel=yes
-        PANEL_LIB="-lpanel"
+        PANEL_LIBS="-lpanel"
 
 $as_echo "#define HAVE_PANEL 1" >>confdefs.h
 
@@ -6581,10 +6918,18 @@ $as_echo "#define HAVE_PANEL_H 1" >>confdefs.h
 
 else
 
-        ax_cv_panel=no
+        if test "x$ax_cv_panel" = xyes; then :
+
+else
+  ax_cv_panel=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -6599,19 +6944,22 @@ fi
 
 
 
-    if test "x$MENU_LIB" != x; then :
+    if test "x$MENU_LIBS" != x; then :
 
 
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Menu library with menu.h" >&5
 $as_echo_n "checking for Curses Menu library with menu.h... " >&6; }
 if ${ax_cv_header_menu_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS $MENU_LIB $CURSES_LIB"
+        LIBS="$ax_saved_LIBS $MENU_LIBS $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6652,10 +7000,18 @@ $as_echo "#define HAVE_MENU_H 1" >>confdefs.h
 
 else
 
-        ax_cv_menu=no
+        if test "x$ax_cv_menu" = xyes; then :
+
+else
+  ax_cv_menu=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -6667,13 +7023,16 @@ else
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Menu library with ncursesw/menu.h" >&5
 $as_echo_n "checking for Curses Menu library with ncursesw/menu.h... " >&6; }
 if ${ax_cv_header_ncursesw_menu_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lmenuw $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lmenuw $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6704,7 +7063,7 @@ $as_echo "$ax_cv_header_ncursesw_menu_h" >&6; }
     if test "x$ax_cv_header_ncursesw_menu_h" = xyes; then :
 
         ax_cv_menu=yes
-        MENU_LIB="-lmenuw"
+        MENU_LIBS="-lmenuw"
 
 $as_echo "#define HAVE_MENU 1" >>confdefs.h
 
@@ -6714,10 +7073,18 @@ $as_echo "#define HAVE_NCURSESW_MENU_H 1" >>confdefs.h
 
 else
 
-        ax_cv_menu=no
+        if test "x$ax_cv_menu" = xyes; then :
+
+else
+  ax_cv_menu=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -6727,13 +7094,86 @@ elif test "x$ax_cv_curses_which" = xncurses; then :
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Menu library with menu.h" >&5
+$as_echo_n "checking for Curses Menu library with menu.h... " >&6; }
+if ${ax_cv_header_menu_h+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        LIBS="$ax_saved_LIBS -lmenu $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+                #include <menu.h>
+
+int
+main ()
+{
+
+            ITEM **mi;
+            MENU *m = new_menu(mi);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_header_menu_h=yes
+else
+  ax_cv_header_menu_h=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_header_menu_h" >&5
+$as_echo "$ax_cv_header_menu_h" >&6; }
+    if test "x$ax_cv_header_menu_h" = xyes; then :
+
+        ax_cv_menu=yes
+        MENU_LIBS="-lmenu"
+
+$as_echo "#define HAVE_MENU 1" >>confdefs.h
+
+
+$as_echo "#define HAVE_MENU_H 1" >>confdefs.h
+
+
+else
+
+        if test "x$ax_cv_menu" = xyes; then :
+
+else
+  ax_cv_menu=no
+fi
+
+fi
+
+    LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
+
+
+            if test x$ax_cv_menu != "xyes"; then :
+
+
+
+
+    ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Menu library with ncurses/menu.h" >&5
 $as_echo_n "checking for Curses Menu library with ncurses/menu.h... " >&6; }
 if ${ax_cv_header_ncurses_menu_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lmenu $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lmenu $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6764,7 +7204,7 @@ $as_echo "$ax_cv_header_ncurses_menu_h" >&6; }
     if test "x$ax_cv_header_ncurses_menu_h" = xyes; then :
 
         ax_cv_menu=yes
-        MENU_LIB="-lmenu"
+        MENU_LIBS="-lmenu"
 
 $as_echo "#define HAVE_MENU 1" >>confdefs.h
 
@@ -6774,69 +7214,22 @@ $as_echo "#define HAVE_NCURSES_MENU_H 1" >>confdefs.h
 
 else
 
-        ax_cv_menu=no
+        if test "x$ax_cv_menu" = xyes; then :
+
+else
+  ax_cv_menu=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
-
-
-
-    ax_saved_LIBS=$LIBS
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Menu library with menu.h" >&5
-$as_echo_n "checking for Curses Menu library with menu.h... " >&6; }
-if ${ax_cv_header_menu_h+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        LIBS="$ax_saved_LIBS -lmenu $CURSES_LIB"
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-                #include <menu.h>
-
-int
-main ()
-{
-
-            ITEM **mi;
-            MENU *m = new_menu(mi);
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_header_menu_h=yes
-else
-  ax_cv_header_menu_h=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
 
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_header_menu_h" >&5
-$as_echo "$ax_cv_header_menu_h" >&6; }
-    if test "x$ax_cv_header_menu_h" = xyes; then :
-
-        ax_cv_menu=yes
-        MENU_LIB="-lmenu"
-
-$as_echo "#define HAVE_MENU 1" >>confdefs.h
-
-
-$as_echo "#define HAVE_MENU_H 1" >>confdefs.h
-
-
-else
-
-        ax_cv_menu=no
-
-fi
-    LIBS=$ax_saved_LIBS
-
-
 
 elif test "x$ax_cv_curses_which" = xplaincurses; then :
 
@@ -6844,13 +7237,16 @@ elif test "x$ax_cv_curses_which" = xplaincurses; then :
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Menu library with menu.h" >&5
 $as_echo_n "checking for Curses Menu library with menu.h... " >&6; }
 if ${ax_cv_header_menu_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lmenu $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lmenu $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6881,7 +7277,7 @@ $as_echo "$ax_cv_header_menu_h" >&6; }
     if test "x$ax_cv_header_menu_h" = xyes; then :
 
         ax_cv_menu=yes
-        MENU_LIB="-lmenu"
+        MENU_LIBS="-lmenu"
 
 $as_echo "#define HAVE_MENU 1" >>confdefs.h
 
@@ -6891,10 +7287,18 @@ $as_echo "#define HAVE_MENU_H 1" >>confdefs.h
 
 else
 
-        ax_cv_menu=no
+        if test "x$ax_cv_menu" = xyes; then :
+
+else
+  ax_cv_menu=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -6909,19 +7313,22 @@ fi
 
 
 
-    if test "x$FORM_LIB" != x; then :
+    if test "x$FORM_LIBS" != x; then :
 
 
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Form library with form.h" >&5
 $as_echo_n "checking for Curses Form library with form.h... " >&6; }
 if ${ax_cv_header_form_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS $FORM_LIB $CURSES_LIB"
+        LIBS="$ax_saved_LIBS $FORM_LIBS $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6962,10 +7369,18 @@ $as_echo "#define HAVE_FORM_H 1" >>confdefs.h
 
 else
 
-        ax_cv_form=no
+        if test "x$ax_cv_form" = xyes; then :
+
+else
+  ax_cv_form=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -6977,13 +7392,16 @@ else
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Form library with ncursesw/form.h" >&5
 $as_echo_n "checking for Curses Form library with ncursesw/form.h... " >&6; }
 if ${ax_cv_header_ncursesw_form_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lformw $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lformw $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -7014,7 +7432,7 @@ $as_echo "$ax_cv_header_ncursesw_form_h" >&6; }
     if test "x$ax_cv_header_ncursesw_form_h" = xyes; then :
 
         ax_cv_form=yes
-        FORM_LIB="-lformw"
+        FORM_LIBS="-lformw"
 
 $as_echo "#define HAVE_FORM 1" >>confdefs.h
 
@@ -7024,10 +7442,18 @@ $as_echo "#define HAVE_NCURSESW_FORM_H 1" >>confdefs.h
 
 else
 
-        ax_cv_form=no
+        if test "x$ax_cv_form" = xyes; then :
+
+else
+  ax_cv_form=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -7037,13 +7463,86 @@ elif test "x$ax_cv_curses_which" = xncurses; then :
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Form library with form.h" >&5
+$as_echo_n "checking for Curses Form library with form.h... " >&6; }
+if ${ax_cv_header_form_h+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        LIBS="$ax_saved_LIBS -lform $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+                #include <form.h>
+
+int
+main ()
+{
+
+            FIELD **ff;
+            FORM *f = new_form(ff);
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_header_form_h=yes
+else
+  ax_cv_header_form_h=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_header_form_h" >&5
+$as_echo "$ax_cv_header_form_h" >&6; }
+    if test "x$ax_cv_header_form_h" = xyes; then :
+
+        ax_cv_form=yes
+        FORM_LIBS="-lform"
+
+$as_echo "#define HAVE_FORM 1" >>confdefs.h
+
+
+$as_echo "#define HAVE_FORM_H 1" >>confdefs.h
+
+
+else
+
+        if test "x$ax_cv_form" = xyes; then :
+
+else
+  ax_cv_form=no
+fi
+
+fi
+
+    LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
+
+
+            if test x$ax_cv_form != "xyes"; then :
+
+
+
+
+    ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Form library with ncurses/form.h" >&5
 $as_echo_n "checking for Curses Form library with ncurses/form.h... " >&6; }
 if ${ax_cv_header_ncurses_form_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lform $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lform $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -7074,7 +7573,7 @@ $as_echo "$ax_cv_header_ncurses_form_h" >&6; }
     if test "x$ax_cv_header_ncurses_form_h" = xyes; then :
 
         ax_cv_form=yes
-        FORM_LIB="-lform"
+        FORM_LIBS="-lform"
 
 $as_echo "#define HAVE_FORM 1" >>confdefs.h
 
@@ -7084,69 +7583,22 @@ $as_echo "#define HAVE_NCURSES_FORM_H 1" >>confdefs.h
 
 else
 
-        ax_cv_form=no
+        if test "x$ax_cv_form" = xyes; then :
+
+else
+  ax_cv_form=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
-
-
-
-    ax_saved_LIBS=$LIBS
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Form library with form.h" >&5
-$as_echo_n "checking for Curses Form library with form.h... " >&6; }
-if ${ax_cv_header_form_h+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        LIBS="$ax_saved_LIBS -lform $CURSES_LIB"
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-                #include <form.h>
-
-int
-main ()
-{
-
-            FIELD **ff;
-            FORM *f = new_form(ff);
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_header_form_h=yes
-else
-  ax_cv_header_form_h=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
 
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_header_form_h" >&5
-$as_echo "$ax_cv_header_form_h" >&6; }
-    if test "x$ax_cv_header_form_h" = xyes; then :
-
-        ax_cv_form=yes
-        FORM_LIB="-lform"
-
-$as_echo "#define HAVE_FORM 1" >>confdefs.h
-
-
-$as_echo "#define HAVE_FORM_H 1" >>confdefs.h
-
-
-else
-
-        ax_cv_form=no
-
-fi
-    LIBS=$ax_saved_LIBS
-
-
 
 elif test "x$ax_cv_curses_which" = xplaincurses; then :
 
@@ -7154,13 +7606,16 @@ elif test "x$ax_cv_curses_which" = xplaincurses; then :
 
 
     ax_saved_LIBS=$LIBS
+    ax_saved_CPPFLAGS=$CPPFLAGS
+
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Curses Form library with form.h" >&5
 $as_echo_n "checking for Curses Form library with form.h... " >&6; }
 if ${ax_cv_header_form_h+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
-        LIBS="$ax_saved_LIBS -lform $CURSES_LIB"
+        LIBS="$ax_saved_LIBS -lform $CURSES_LIBS"
+        CPPFLAGS="$ax_saved_CPPFLAGS $CURSES_CFLAGS"
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -7191,7 +7646,7 @@ $as_echo "$ax_cv_header_form_h" >&6; }
     if test "x$ax_cv_header_form_h" = xyes; then :
 
         ax_cv_form=yes
-        FORM_LIB="-lform"
+        FORM_LIBS="-lform"
 
 $as_echo "#define HAVE_FORM 1" >>confdefs.h
 
@@ -7201,10 +7656,18 @@ $as_echo "#define HAVE_FORM_H 1" >>confdefs.h
 
 else
 
-        ax_cv_form=no
+        if test "x$ax_cv_form" = xyes; then :
+
+else
+  ax_cv_form=no
+fi
 
 fi
+
     LIBS=$ax_saved_LIBS
+    CPPFLAGS=$ax_saved_CPPFLAGS
+    unset ax_saved_LIBS
+    unset ax_saved_CPPFLAGS
 
 
 
@@ -7484,7 +7947,6 @@ _ACEOF
 fi
 
 done
-
 
 # Checks for typedefs, structures, and compiler characteristics.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for function prototypes" >&5
@@ -7880,7 +8342,7 @@ _ACEOF
 fi
 done
 
-
+# Output.
 ac_config_files="$ac_config_files Makefile build.sh"
 
 cat >confcache <<\_ACEOF

@@ -44,14 +44,14 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
 {
     CURL *curl_handle;
     struct MemoryStruct chunk;
-    chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */
+    chunk.memory = malloc(1UL); /* will be grown as needed by the realloc above */
     chunk.size = 0;
     curl_handle = curl_easy_init();
     if(!startsWith("/r/",sub)){
         sub = prepend("/r/",sub);
     }
     // GET request
-    int url_size = REDDIT_URL_BASE_LENGTH + strlen(sub) + strlen(sorting);
+    size_t url_size = (REDDIT_URL_BASE_LENGTH + strlen(sub) + strlen(sorting));
     char url[url_size];
     strcpy(url,"http://reddit.com");
     strcat(url,sub);
@@ -77,6 +77,9 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
     js = chunk.memory;
     jsmn_init(&p);
     r = jsmn_parse(&p, js, t, 25000);
+    if (r < 0) {
+	; /* ??? */
+    }
     int i =0;
     char buffer[2048];
 
@@ -85,17 +88,19 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
     for(i = 0; i < 25000; ++i)
     {
         if(t[i].start == -1) continue;
-        if(t[i].type == 1 ) {i+=t[i].size;  continue;}
+        if(t[i].type == 1) { i += t[i].size; continue; }
         if(t[i].start >= t[i].end || t[i].end-t[i].start > 2040) continue;
-        memcpy(buffer,&chunk.memory[t[i].start],t[i].end-t[i].start);
+        memcpy(buffer, &chunk.memory[t[i].start],
+	       (size_t)(t[i].end - t[i].start));
         buffer[t[i].end-t[i].start] = 0;
 
         if(strcmp("id",buffer) == 0)
         {
             i++;
-            char *tmp = malloc(t[i].end-t[i].start+1);
-            memcpy(tmp,&chunk.memory[t[i].start],t[i].end-t[i].start);
-            postList[atPost].id = malloc(t[i].end-t[i].start+1);
+            char *tmp = malloc(t[i].end - t[i].start + 1UL);
+            memcpy(tmp, &chunk.memory[t[i].start],
+		   (size_t)(t[i].end - t[i].start));
+            postList[atPost].id = malloc(t[i].end - t[i].start + 1UL);
             tmp[t[i].end-t[i].start] = 0;
             strcpy(postList[atPost].id,tmp);
             free(tmp);
@@ -103,19 +108,21 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
         if(strcmp("title",buffer) == 0)
         {
             i++;
-            char *tmp = malloc(t[i].end-t[i].start+1);
-            memcpy(tmp,&chunk.memory[t[i].start],t[i].end-t[i].start);
-            postList[atPost].title = malloc(t[i].end-t[i].start+1);
-            tmp[t[i].end-t[i].start] = 0;
-            strcpy(postList[atPost].title,tmp);
+            char *tmp = malloc(t[i].end - t[i].start + 1UL);
+            memcpy(tmp, &chunk.memory[t[i].start],
+		   (size_t)(t[i].end - t[i].start));
+            postList[atPost].title = malloc(t[i].end - t[i].start + 1UL);
+            tmp[t[i].end - t[i].start] = 0;
+            strcpy(postList[atPost].title, tmp);
             free(tmp);
         }
         if(strcmp("score",buffer) == 0)
         {
             i++;
-            char *tmp = malloc(t[i].end-t[i].start+1);
-            memcpy(tmp,&chunk.memory[t[i].start],t[i].end-t[i].start);
-            postList[atPost].votes = malloc(t[i].end-t[i].start+1);
+            char *tmp = malloc(t[i].end - t[i].start + 1UL);
+            memcpy(tmp, &chunk.memory[t[i].start],
+		   (size_t)(t[i].end - t[i].start));
+            postList[atPost].votes = malloc(t[i].end - t[i].start + 1UL);
             tmp[t[i].end-t[i].start] = 0;
             strcpy(postList[atPost].votes,tmp);
             free(tmp);
@@ -123,9 +130,10 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
         if(strcmp("author",buffer) == 0)
         {
             i++;
-            char *tmp = malloc(t[i].end-t[i].start+1);
-            memcpy(tmp,&chunk.memory[t[i].start],t[i].end-t[i].start);
-            postList[atPost].author = malloc(t[i].end-t[i].start+1);
+            char *tmp = malloc(t[i].end - t[i].start + 1UL);
+            memcpy(tmp, &chunk.memory[t[i].start],
+		   (size_t)(t[i].end - t[i].start));
+            postList[atPost].author = malloc(t[i].end - t[i].start + 1UL);
             tmp[t[i].end-t[i].start] = 0;
             strcpy(postList[atPost].author,tmp);
             atPost++;
@@ -136,10 +144,11 @@ void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int 
         if(strcmp("subreddit",buffer) == 0)
         {
             i++;
-            char *tmp = malloc(t[i].end-t[i].start+1);
-            memcpy(tmp,&chunk.memory[t[i].start],t[i].end-t[i].start);
+            char *tmp = malloc(t[i].end - t[i].start + 1UL);
+            memcpy(tmp, &chunk.memory[t[i].start],
+		   (size_t)(t[i].end - t[i].start));
             tmp[t[i].end-t[i].start] = 0;
-            postList[atPost].subreddit = malloc(t[i].end-t[i].start+1);
+            postList[atPost].subreddit = malloc(t[i].end - t[i].start + 1UL);
             strcpy(postList[atPost].subreddit,tmp);
             free(tmp);
         }
@@ -153,7 +162,7 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
 {
     CURL *curl_handle;
     struct MemoryStruct chunk;
-    chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */
+    chunk.memory = malloc(1UL); /* will be grown as needed by the realloc above */
     chunk.size = 0;
     curl_handle = curl_easy_init();
 
@@ -183,6 +192,9 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
     js = chunk.memory;
     jsmn_init(&p);
     r = jsmn_parse(&p, js, t, 2500);
+    if (r < 0) {
+	; /* ??? */
+    }
     int i =0;
     char buffer[6048];
 
@@ -192,21 +204,24 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
         if(t[i].start == -1) continue;
         if(t[i].type == 1 ) {i+=t[i].size;  continue;}
         if(t[i].start >= t[i].end || t[i].end-t[i].start > 2040) continue;
-        memcpy(buffer,&chunk.memory[t[i].start],t[i].end-t[i].start);
+        memcpy(buffer, &chunk.memory[t[i].start],
+	       (size_t)(t[i].end - t[i].start));
         buffer[t[i].end-t[i].start] = 0;
         refresh();
 
         if(strcmp("id",buffer) == 0)
         {
             i++;
-            char *tmp = malloc(t[i].end-t[i].start+1);
-            memcpy(tmp,&chunk.memory[t[i].start],t[i].end-t[i].start);
-            commentList[atPost].id = malloc(t[i].end-t[i].start+1);
+            char *tmp = malloc(t[i].end - t[i].start + 1UL);
+            memcpy(tmp, &chunk.memory[t[i].start],
+		   (size_t)(t[i].end - t[i].start));
+            commentList[atPost].id = malloc(t[i].end - t[i].start + 1UL);
             tmp[t[i].end-t[i].start] = 0;
             strcpy(commentList[atPost].id,tmp);
             free(tmp);
         }
-        /* Measured in ups and down votes, commented out because this is a TODO
+        /* Measured in ups & down votes, ifdefed out because this is a TODO: */
+#ifdef TODOS_ARE_DONE
            if(strcmp("score",buffer) == 0)
            {
            i++;
@@ -216,13 +231,15 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
            tmp[t[i].end-t[i].start] = 0;
            strcpy(commentList[atPost].votes,tmp);
            free(tmp);
-           }*/
+           }
+#endif /* TODOS_ARE_DONE */
         if(strcmp("author",buffer) == 0)
         {
             i++;
-            char *tmp = malloc(t[i].end-t[i].start+1);
-            memcpy(tmp,&chunk.memory[t[i].start],t[i].end-t[i].start);
-            commentList[atPost].author = malloc(t[i].end-t[i].start+1);
+            char *tmp = malloc(t[i].end - t[i].start + 1UL);
+            memcpy(tmp, &chunk.memory[t[i].start],
+		   (size_t)(t[i].end - t[i].start));
+            commentList[atPost].author = malloc(t[i].end - t[i].start + 1UL);
             tmp[t[i].end-t[i].start] = 0;
             strcpy(commentList[atPost].author,tmp);
             atPost++;
@@ -233,10 +250,11 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
         if(strcmp("body",buffer) == 0)
         {
             i++;
-            char *tmp = malloc(t[i].end-t[i].start+1);
-            memcpy(tmp,&chunk.memory[t[i].start],t[i].end-t[i].start);
+            char *tmp = malloc(t[i].end - t[i].start + 1UL);
+            memcpy(tmp, &chunk.memory[t[i].start],
+		   (size_t)(t[i].end - t[i].start));
             tmp[t[i].end-t[i].start] = 0;
-            commentList[atPost].text = malloc(t[i].end-t[i].start+1);
+            commentList[atPost].text = malloc(t[i].end - t[i].start + 1UL);
             strcpy(commentList[atPost].text,tmp);
             free(tmp);
         }
@@ -247,18 +265,18 @@ void redditGetThread(char * postid, struct comments * commentList, int * comment
 
 }
 
-void cleanup() // There is actually a prototype for this in reddit.h; I do not know why I am getting a warning about this...
+void cleanup(void)
 {
 	curl_global_cleanup();
 	endwin();
 }
 
-char *ask_for_subreddit() // See comment for cleanup()
+char *ask_for_subreddit(void)
 {
 	clear();
 	mvprintw(10, 6, "Subreddit: ");
 	int ch, i = 0;
-	char *buffer = malloc(sizeof(int) * 128);
+	char *buffer = malloc(sizeof(int) * 128UL);
 	while((ch = getch()) != '\n') {
 		if(i == 127) {
 			break;
@@ -270,7 +288,7 @@ char *ask_for_subreddit() // See comment for cleanup()
 			exit(0);
 		} else {
 			buffer[i++] = ch;
-			addch(ch);
+			addch((const chtype)ch);
 		}
 	}
 	return buffer;

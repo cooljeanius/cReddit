@@ -50,9 +50,11 @@ struct comments {
 char* prepend(char *pre, char *str);
 void redditGetThread(char * postid, struct comments * commentList, int * commentCount);
 void redditGetSubreddit(char * sub, char * sorting, struct post * postList, int * postCount);
-char *ask_for_subreddit();
+char *ask_for_subreddit(void);
 void showSubreddit(char *subreddit);
-void cleanup();
+void cleanup(void);
 int startsWith(char *pre, char *str);
 
-#endif
+#endif /* !__REDDIT_H__ */
+
+/* EOF */
