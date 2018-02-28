@@ -30,6 +30,7 @@ config.h
 *.status
 Makefile.in
 Makefile
+build.sh
 
 # OS X junk
 *DS_Store*

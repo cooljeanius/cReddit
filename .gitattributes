@@ -4,3 +4,7 @@ build-aux/config.sub linguist-vendored
 build-aux/install-sh linguist-vendored
 build-aux/missing linguist-vendored
 aclocal.m4 linguist-vendored
+m4/ax_*.m4 linguist-vendored
+m4/bakefile.m4 linguist-vendored
+m4/libcurl.m4 linguist-vendored
+m4/pkg.m4 linguist-vendored
